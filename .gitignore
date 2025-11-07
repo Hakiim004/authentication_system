@@ -1,0 +1,37 @@
+# --- Environnements virtuels ---
+env/
+venv/
+.venv/
+
+# --- Fichiers d'environnement et secrets ---
+.env
+*.env
+
+# --- Bases de données locales ---
+*.db
+*.sqlite3
+
+# --- Fichiers compilés Python ---
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# --- Caches et logs ---
+*.log
+*.pid
+*.seed
+*.bak
+
+# --- Dossiers spécifiques à l’IDE ---
+.vscode/
+.idea/
+
+# --- Dossiers de build ou dist ---
+build/
+dist/
+*.egg-info/
+
+# --- Fichiers système (Windows / macOS) ---
+.DS_Store
+Thumbs.db

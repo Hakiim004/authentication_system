@@ -1,0 +1,60 @@
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Connexion</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+  <div class="container">
+    <div class="auth-card">
+      <div class="logo-section">
+        <div class="logo-placeholder">
+          <img src="{{ url_for('static', filename='mes_images/Logo_Bon (1).png') }}" alt="Logo_Bon">
+        </div>
+      </div>
+
+      <div class="form-container">
+        <form class="auth-form" method="POST" action="{{ url_for('login') }}">
+          <div class="form-header">
+            <h2>Connexion</h2>
+            <p>Connectez-vous à votre compte</p>
+          </div>
+
+          <div class="form-group">
+            <div class="input-container">
+              <i class="fas fa-user input-icon"></i>
+              <input type="text" name="username" required>
+              <label>Nom d'utilisateur</label>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <div class="input-container">
+              <i class="fas fa-lock input-icon"></i>
+              <input type="password" name="password" required>
+              <label>Mot de passe</label>
+            </div>
+          </div>
+
+          <button type="submit" class="submit-btn">
+            <span>Se connecter</span>
+            <i class="fas fa-arrow-right"></i>
+          </button>
+
+          <div class="form-switch">
+            <p>Pas encore de compte ? 
+              <a href="{{ url_for('register') }}">S'inscrire</a>
+            </p>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <script src='{{ url_for('static', filename='script.js') }}'></script>
+</body>
+</html>
