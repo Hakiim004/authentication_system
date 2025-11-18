@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>{% block title %}Mon App{% endblock %}</title>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+        integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+  <style>
+    /* ===== Container global des messages ===== */
+    .flash-wrap {
+      position: fixed;
+      top: 24px;
+      right: 24px;
+      z-index: 1200;
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+      width: min(420px, calc(100% - 48px));
+      pointer-events: none; /* permet click-through sauf sur les messages eux-mêmes */
+    }
+
+    .flash {
+      pointer-events: auto;
+      display:flex;
+      gap:12px;
+      align-items:center;
+      padding:12px 14px;
+      border-radius:12px;
+      box-shadow:0 10px 30px rgba(12,18,45,0.12);
+      background: linear-gradient(180deg, rgba(255,255,255,0.92), rgba(250,250,255,0.95));
+      color:#0d1b2a;
+      font-weight:600;
+      transform-origin: top right;
+      opacity:0;
+      transform: translateY(-8px) scale(0.98);
+      transition: transform .18s cubic-bezier(.2,.9,.2,1), opacity .18s ease;
+      border:1px solid rgba(10,20,60,0.03);
+    }
+    .flash.show {
+      opacity:1;
+      transform: translateY(0) scale(1);
+    }
+
+    .flash .icon {
+      width:36px;
+      height:36px;
+      border-radius:8px;
+      display:grid;
+      place-items:center;
+      font-size:16px;
+      flex-shrink:0;
+    }
+
+    .flash .content {
+      flex:1;
+      font-size:0.95rem;
+      line-height:1.2;
+    }
+    .flash .close {
+      cursor:pointer;
+      opacity:0.7;
+      border:none;
+      background:transparent;
+      font-size:14px;
+    }
+
+    /* Styles par catégorie (mappe avec flash(category, message)) */
+    .flash.success { border-left:4px solid #00a86b; }
+    .flash.success .icon { background: rgba(0,168,107,0.12); color:#00a86b; }
+
+    .flash.info { border-left:4px solid #2f6bff; }
+    .flash.info .icon { background: rgba(47,107,255,0.08); color:#2f6bff; }
+
+    .flash.warning { border-left:4px solid #ff8c00; }
+    .flash.warning .icon { background: rgba(255,140,0,0.08); color:#ff8c00; }
+
+    .flash.danger { border-left:4px solid #e03e2d; }
+    .flash.danger .icon { background: rgba(224,62,45,0.08); color:#e03e2d; }
+
+    /* message d'erreur serveur important (500) plus visible */
+    .flash.server {
+      background: linear-gradient(90deg, rgba(224,62,45,0.06), rgba(255,255,255,0.95));
+      border-left: 5px solid rgba(224,62,45,0.95);
+    }
+
+    /* responsive */
+    @media (max-width:480px){
+      .flash-wrap { left: 12px; right:12px; top: 12px; width: calc(100% - 24px); }
+    }
+  </style>
+  {% block head %}{% endblock %}
+</head>
+<body>
+  <!-- Zone d'affichage des messages flash -->
+  <div class="flash-wrap" id="flashWrap">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, msg in messages %}
+          {# Normalise la catégorie pour correspondre aux classes CSS #}
+          {% set cat = category if category else 'info' %}
+          <div class="flash {{ 'server' if cat == '500' else cat }}" role="alert" data-category="{{cat}}">
+            <div class="icon">
+              {% if cat in ['success'] %}
+                <i class="fas fa-check"></i>
+              {% elif cat in ['info'] %}
+                <i class="fas fa-info"></i>
+              {% elif cat in ['warning'] %}
+                <i class="fas fa-exclamation"></i>
+              {% elif cat in ['danger', '500', '401', '400'] %}
+                <i class="fas fa-exclamation-triangle"></i>
+              {% else %}
+                <i class="fas fa-bell"></i>
+              {% endif %}
+            </div>
+            <div class="content">{{ msg|safe }}</div>
+            <button class="close" aria-label="Fermer" title="Fermer">&times;</button>
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+  </div>
+
+  <!-- Le contenu des pages -->
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+
+  <script>
+    // Animation d'apparition et auto-dismiss
+    document.addEventListener('DOMContentLoaded', function(){
+      const flashes = Array.from(document.querySelectorAll('.flash'));
+      flashes.forEach((el, idx) => {
+        // délai échelonné pour l'animation d'entrée
+        setTimeout(()=> el.classList.add('show'), idx * 80);
+
+        // auto dismiss selon catégorie (server/danger reste plus longtemps)
+        const cat = el.dataset.category || 'info';
+        let timeout = 4500;
+        if(cat === 'danger' || cat === '500' || cat === '401') timeout = 9000;
+        if(cat === 'success') timeout = 3500;
+        if(cat === 'server') timeout = 15000;
+
+        const t = setTimeout(()=> hideFlash(el), timeout);
+
+        // close button
+        const btn = el.querySelector('.close');
+        btn.addEventListener('click', ()=> {
+          clearTimeout(t);
+          hideFlash(el);
+        });
+      });
+
+      function hideFlash(el){
+        el.classList.remove('show');
+        // enlever du DOM après animation
+        setTimeout(()=> el.remove(), 220);
+      }
+    });
+  </script>
+
+  {% block scripts %}{% endblock %}
+</body>
+</html>
