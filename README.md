@@ -1,6 +1,6 @@
 # authentication_system
-Project for the 5th semester at ISTAPEM in the Cryptography course: we will build authentication and authorization from scratch.
-Authors:OUEDRAOGO Wend Nonga Abdoul Hakiim , Belem Claver , Yaya Karama , ATCHIOGBE ulrich
+
+
 Date: June 2024
 Technologies used: Python, Flask, SQLite, HTML, CSS, JavaScript
 Description: This project implements a secure authentication system with user registration, login, password hashing, session management, and account lockout features.
