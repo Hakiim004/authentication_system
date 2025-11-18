@@ -82,7 +82,7 @@ def handle_exception(e):
     return jsonify({"msg": "Erreur interne du serveur"}), 500
 
 # -------------------- Routes --------------------
-@app.route('/register', methods=['GET', 'POST'])
+@app.route('/', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
         username = request.form['username']
@@ -198,4 +198,5 @@ def reset_password(token):
 
 # -------------------- Lancer l'application --------------------
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=5000)
+
